@@ -25,4 +25,12 @@ public class MainActivity extends AppCompatActivity {
     public void loadingError(View view) {
         startActivity(new Intent(this, LoadingErrorActivity.class));
     }
+
+    public void loadingSuccessTr(View view) {
+        startActivity(new Intent(this, LoadingSuccessTrActivity.class));
+    }
+
+    public void loadingErrorTr(View view) {
+        startActivity(new Intent(this, LoadingErrorTrActivity.class));
+    }
 }

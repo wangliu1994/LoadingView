@@ -18,6 +18,8 @@
         </activity>
         <activity android:name=".LoadingErrorActivity" />
         <activity android:name=".LoadingSuccessActivity" />
+        <activity android:name=".LoadingErrorTrActivity" />
+        <activity android:name=".LoadingSuccessTrActivity" />
     </application>
 
 </manifest>

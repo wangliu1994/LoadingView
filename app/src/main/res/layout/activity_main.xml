@@ -23,4 +23,18 @@
         android:text="加载失败Loading"
         android:textAllCaps="false" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="loadingSuccessTr"
+        android:text="透明加载成功Loading"
+        android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="loadingErrorTr"
+        android:text="透明加载失败Loading"
+        android:textAllCaps="false" />
+
 </LinearLayout>

@@ -27,24 +27,38 @@ public class LoadingView {
     private boolean mLoadingInflated = false;
     private boolean mLoadErrorInflated = false;
 
+    /**
+     * 背景透明，为false的时候全屏白色覆盖
+     */
+    private boolean mTransparentTag = false;
+
     public LoadingView(Activity context) {
         mContext = context;
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         mLoadingView = new LoadContentView(mContext);
         mLoadErrorView = new LoadErrorView(mContext);
+        mLoadingView.transparent(mTransparentTag);
+        mLoadErrorView.transparent(mTransparentTag);
 
         mParentView = mContext.getWindow().getDecorView().findViewById(android.R.id.content);
         mParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
+    public void setTransparentTag(boolean transparentTag) {
+        this.mTransparentTag = transparentTag;
+        mLoadingView.transparent(transparentTag);
+        mLoadErrorView.transparent(transparentTag);
+
+    }
+
     /**
      * 加载loading
      */
-    public void show(){
-        if(!mLoadingInflated){
+    public void show() {
+        if (!mLoadingInflated) {
             mParentView.addView(mLoadingView.getContentView(), mParams);
             mLoadingInflated = true;
         }
@@ -56,16 +70,16 @@ public class LoadingView {
     }
 
 
-    public void success(){
-        if(!mLoadingInflated){
+    public void success() {
+        if (!mLoadingInflated) {
             return;
         }
         mLoadingView.hide();
         slideUpInSuccess();
     }
 
-    public void error(){
-        if(!mLoadErrorInflated){
+    public void error() {
+        if (!mLoadErrorInflated) {
             mParentView.addView(mLoadErrorView.getContentView(), mParams);
             mLoadErrorInflated = true;
         }
@@ -128,18 +142,20 @@ public class LoadingView {
         mLoadingView.getRectangleView().startAnimation(scaleAnimation);
     }
 
-    private class LoadContentView{
+    private class LoadContentView {
         private View mContentView;
+        private LinearLayout mLoadingBg;
         private LinearLayout mRectangleView;
         private ImageView mImageView;
 
         LoadContentView(Context context) {
             mContentView = View.inflate(context, R.layout.layout_loading_view, null);
+            mLoadingBg = mContentView.findViewById(R.id.loading_bg);
             mRectangleView = mContentView.findViewById(R.id.show_rectangle);
             mImageView = mContentView.findViewById(R.id.loading_image);
         }
 
-        void show(){
+        void show() {
             RotateAnimation animation = new RotateAnimation(0, 360,
                     Animation.RELATIVE_TO_SELF, 0.5f,
                     Animation.RELATIVE_TO_SELF, 0.5f);
@@ -150,8 +166,18 @@ public class LoadingView {
             mImageView.startAnimation(animation);
         }
 
-        void hide(){
+        void hide() {
             mImageView.clearAnimation();
+        }
+
+        void transparent(boolean transparentTag) {
+            if(transparentTag){
+                mLoadingBg.setBackground(null);
+                mRectangleView.setBackgroundResource(R.drawable.bg_loading);
+            }else {
+                mLoadingBg.setBackgroundResource(android.R.color.white);
+                mRectangleView.setBackground(null);
+            }
         }
 
         LinearLayout getRectangleView() {
@@ -163,11 +189,26 @@ public class LoadingView {
         }
     }
 
-    private class LoadErrorView{
+    private class LoadErrorView {
         private View mContentView;
+        private LinearLayout mLoadingBg;
+        private LinearLayout mRectangleView;
+
 
         LoadErrorView(Context context) {
             mContentView = View.inflate(context, R.layout.layout_loading_error, null);
+            mLoadingBg = mContentView.findViewById(R.id.loading_bg);
+            mRectangleView = mContentView.findViewById(R.id.show_rectangle);
+        }
+
+        void transparent(boolean transparentTag) {
+            if(transparentTag){
+                mLoadingBg.setBackground(null);
+                mRectangleView.setBackgroundResource(R.drawable.bg_loading);
+            }else {
+                mLoadingBg.setBackgroundResource(android.R.color.white);
+                mRectangleView.setBackground(null);
+            }
         }
 
         View getContentView() {
