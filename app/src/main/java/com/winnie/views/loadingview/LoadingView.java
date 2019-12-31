@@ -1,6 +1,5 @@
 package com.winnie.views.loadingview;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 /**
  * @author : winnie
@@ -22,10 +21,11 @@ public class LoadingView {
     private Activity mContext;
     private ViewGroup mParentView;
     private LoadContentView mLoadingView;
+    private LoadErrorView mLoadErrorView;
     private ViewGroup.LayoutParams mParams;
 
-    private boolean mInflated = false;
-    private boolean mVisible = false;
+    private boolean mLoadingInflated = false;
+    private boolean mLoadErrorInflated = false;
 
     public LoadingView(Activity context) {
         mContext = context;
@@ -34,6 +34,7 @@ public class LoadingView {
 
     private void initView(){
         mLoadingView = new LoadContentView(mContext);
+        mLoadErrorView = new LoadErrorView(mContext);
 
         mParentView = mContext.getWindow().getDecorView().findViewById(android.R.id.content);
         mParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -43,30 +44,20 @@ public class LoadingView {
      * 加载loading
      */
     public void show(){
-        if(!mInflated){
+        if(!mLoadingInflated){
             mParentView.addView(mLoadingView.getContentView(), mParams);
-            mInflated = true;
+            mLoadingInflated = true;
         }
 
         mLoadingView.getContentView().setVisibility(View.VISIBLE);
-        mVisible = true;
-        bringToFront();
+        //将loading置于页面最上层，防止被其余模块遮挡
+        mLoadingView.getContentView().bringToFront();
         mLoadingView.show();
     }
 
-    /**
-     * 将loading置于页面最上层，防止被其余模块遮挡
-     */
-    private void bringToFront() {
-        if (!mVisible) {
-            return;
-        }
-
-        mLoadingView.getContentView().bringToFront();
-    }
 
     public void success(){
-        if(!mInflated){
+        if(!mLoadingInflated){
             return;
         }
         mLoadingView.hide();
@@ -74,10 +65,11 @@ public class LoadingView {
     }
 
     public void error(){
-        if(!mInflated){
-            return;
+        if(!mLoadErrorInflated){
+            mParentView.addView(mLoadErrorView.getContentView(), mParams);
+            mLoadErrorInflated = true;
         }
-        mLoadingView.hide();
+        mLoadErrorView.getContentView().setVisibility(View.GONE);
         slideUpInError();
     }
 
@@ -105,7 +97,6 @@ public class LoadingView {
             }
         });
         mLoadingView.getContentView().startAnimation(scaleAnimation);
-        mVisible = false;
     }
 
     private void slideUpInError() {
@@ -127,27 +118,28 @@ public class LoadingView {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                mLoadErrorView.getContentView().setVisibility(View.VISIBLE);
+                //将loading置于页面最上层，防止被其余模块遮挡
+                mLoadErrorView.getContentView().bringToFront();
+
                 mLoadingView.getContentView().setVisibility(View.INVISIBLE);
             }
         });
-        mLoadingView.getContentView().startAnimation(scaleAnimation);
-        mVisible = false;
+        mLoadingView.getRectangleView().startAnimation(scaleAnimation);
     }
 
     private class LoadContentView{
-        private Context mContext;
         private View mContentView;
+        private LinearLayout mRectangleView;
         private ImageView mImageView;
-        private TextView mTextView;
 
         LoadContentView(Context context) {
-            mContext = context;
-            mContentView = View.inflate(mContext, R.layout.layout_loading_view, null);
+            mContentView = View.inflate(context, R.layout.layout_loading_view, null);
+            mRectangleView = mContentView.findViewById(R.id.show_rectangle);
             mImageView = mContentView.findViewById(R.id.loading_image);
-            mTextView = mContentView.findViewById(R.id.loading_text);
         }
 
-        public void show(){
+        void show(){
             RotateAnimation animation = new RotateAnimation(0, 360,
                     Animation.RELATIVE_TO_SELF, 0.5f,
                     Animation.RELATIVE_TO_SELF, 0.5f);
@@ -158,11 +150,27 @@ public class LoadingView {
             mImageView.startAnimation(animation);
         }
 
-        public void hide(){
+        void hide(){
             mImageView.clearAnimation();
         }
 
-        public View getContentView() {
+        LinearLayout getRectangleView() {
+            return mRectangleView;
+        }
+
+        View getContentView() {
+            return mContentView;
+        }
+    }
+
+    private class LoadErrorView{
+        private View mContentView;
+
+        LoadErrorView(Context context) {
+            mContentView = View.inflate(context, R.layout.layout_loading_error, null);
+        }
+
+        View getContentView() {
             return mContentView;
         }
     }

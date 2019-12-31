@@ -2,33 +2,27 @@ package com.winnie.views.loadingview;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.View;
 
 /**
  * @author winnie
  */
 public class MainActivity extends AppCompatActivity {
 
-    private LoadingView mLoadingView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLoadingView = new LoadingView(this);
-        mLoadingView.show();
-        CountDownTimer timer = new CountDownTimer(3000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
+    }
 
-            }
+    public void loadingSuccess(View view) {
+        startActivity(new Intent(this, LoadingSuccessActivity.class));
+    }
 
-            @Override
-            public void onFinish() {
-                mLoadingView.success();
-            }
-        };
-        timer.start();
+    public void loadingError(View view) {
+        startActivity(new Intent(this, LoadingErrorActivity.class));
     }
 }

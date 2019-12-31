@@ -23,18 +23,17 @@
 
         <ImageView
             android:id="@+id/loading_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_waiting" />
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_error" />
 
         <TextView
             android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
             android:layout_marginTop="6dp"
             android:gravity="center"
-            android:text="加载中..."
+            android:text="加载失败"
             android:textColor="#666666"
             android:textSize="18dp" />
     </LinearLayout>
