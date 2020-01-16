@@ -149,6 +149,8 @@ public class LoadingView {
 
         LoadContentView(Context context) {
             mContentView = View.inflate(context, R.layout.layout_loading_view, null);
+            mContentView.setClickable(true);
+
             mLoadingBg = mContentView.findViewById(R.id.loading_bg);
             mRectangleView = mContentView.findViewById(R.id.show_rectangle);
             mImageView = mContentView.findViewById(R.id.loading_image);
@@ -196,6 +198,13 @@ public class LoadingView {
 
         LoadErrorView(Context context) {
             mContentView = View.inflate(context, R.layout.layout_loading_error, null);
+            mContentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContentView.setVisibility(View.GONE);
+                }
+            });
+
             mLoadingBg = mContentView.findViewById(R.id.loading_bg);
             mRectangleView = mContentView.findViewById(R.id.show_rectangle);
         }
