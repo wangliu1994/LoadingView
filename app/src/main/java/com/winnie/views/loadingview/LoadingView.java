@@ -106,8 +106,7 @@ public class LoadingView {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mLoadingView.getContentView().setVisibility(View.INVISIBLE);
-                mLoadingView.getContentView().setTranslationY(-mLoadingView.getContentView().getHeight());
+                mLoadingView.getContentView().setVisibility(View.GONE);
             }
         });
         mLoadingView.getContentView().startAnimation(scaleAnimation);
@@ -136,7 +135,7 @@ public class LoadingView {
                 //将loading置于页面最上层，防止被其余模块遮挡
                 mLoadErrorView.getContentView().bringToFront();
 
-                mLoadingView.getContentView().setVisibility(View.INVISIBLE);
+                mLoadingView.getContentView().setVisibility(View.GONE);
             }
         });
         mLoadingView.getRectangleView().startAnimation(scaleAnimation);
